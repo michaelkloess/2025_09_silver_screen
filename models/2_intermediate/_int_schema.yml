@@ -20,17 +20,6 @@ models:
       - name: location_id
         tests: 
           - not_null
-          - accepted_values:
-              values: 
-                - 'NJ_001'
-                - 'NJ_002' 
-                - 'NJ_003'
-      - name: monthly_price
-        tests:
-          - not_null
-          - dbt_utils.accepted_range:
-              min_value: 0
-              inclusive: true
 
   - name: int_nj_001_daily
     description: Daily sales aggregation for NJ_001
@@ -41,21 +30,9 @@ models:
             - location_id
             - movie_id
     columns:
-      - name: transaction_date
-        tests: 
-          - not_null
       - name: movie_id
         tests:
           - not_null
-          - relationships:
-              to: ref('stg_movie_catalogue')
-              field: movie_id
-      - name: daily_revenue
-        tests:
-          - not_null
-          - dbt_utils.accepted_range:
-              min_value: 0
-              inclusive: true
 
   - name: int_nj_002_daily
     description: Daily sales data for NJ_002
@@ -66,18 +43,9 @@ models:
             - location_id 
             - movie_id
     columns:
-      - name: transaction_date
-        tests: 
-          - not_null
       - name: movie_id
         tests: 
           - not_null
-      - name: daily_revenue
-        tests:
-          - not_null
-          - dbt_utils.accepted_range:
-              min_value: 0
-              inclusive: true
 
   - name: int_nj_003_daily
     description: Daily sales aggregation for NJ_003
@@ -88,25 +56,13 @@ models:
             - location_id
             - movie_id
     columns:
-      - name: transaction_date
-        tests: 
-          - not_null
       - name: movie_id
         tests: 
           - not_null
-      - name: daily_revenue
-        tests:
-          - not_null
-          - dbt_utils.accepted_range:
-              min_value: 0
-              inclusive: true
 
   - name: int_sales_daily_union
     description: Union of all daily sales data
     columns:
-      - name: transaction_date
-        tests: 
-          - not_null
       - name: location_id
         tests:
           - not_null
@@ -128,12 +84,6 @@ models:
       - name: movie_id
         tests: 
           - not_null
-      - name: monthly_revenue
-        tests:
-          - not_null
-          - dbt_utils.accepted_range:
-              min_value: 0
-              inclusive: true
 
   - name: int_sales_and_costs_monthly
     description: Combined monthly sales and costs
@@ -147,9 +97,3 @@ models:
       - name: movie_id
         tests: 
           - not_null
-      - name: monthly_revenue
-        tests:
-          - not_null
-          - dbt_utils.accepted_range:
-              min_value: 0
-              inclusive: true

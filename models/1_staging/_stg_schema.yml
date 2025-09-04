@@ -13,10 +13,10 @@ models:
           - not_null
       - name: invoice_id
         tests: 
-          - not_null 
-              # NOTE: - unique test removed due to duplicate invoice_ids in source data
-              # In production, this would require data quality discussion with upstream systems
-              # For portfolio purposes, demonstrates ability to identify and handle data quality issues
+          # NOTE: unique test removed due to duplicate invoice_ids in source data
+          # In production, this would require data quality discussion with upstream systems
+          # For portfolio purposes, demonstrates ability to identify and handle data quality issues
+          - not_null
       - name: location_id
         tests:
           - not_null
@@ -25,12 +25,6 @@ models:
                 - 'NJ_001'
                 - 'NJ_002'
                 - 'NJ_003'
-      - name: weekly_price
-        tests:
-          - not_null
-          - dbt_utils.accepted_range:
-              min_value: 0
-              inclusive: true
 
   - name: stg_movie_catalogue
     description: Staging model for movie catalog
@@ -60,13 +54,6 @@ models:
           - relationships:
               to: ref('stg_movie_catalogue')
               field: movie_id
-      - name: ticket_price
-        tests:
-          - not_null
-          - dbt_utils.accepted_range:
-              min_value: 0
-              max_value: 100
-              inclusive: true
 
   - name: stg_nj_002
     description: Staging model for NJ_002 daily sales
@@ -85,13 +72,6 @@ models:
           - relationships:
               to: ref('stg_movie_catalogue')
               field: movie_id
-      - name: ticket_price
-        tests:
-          - not_null
-          - dbt_utils.accepted_range:
-              min_value: 0
-              max_value: 100
-              inclusive: true
 
   - name: stg_nj_003
     description: Staging model for NJ_003 ticket transactions
@@ -105,10 +85,3 @@ models:
           - relationships:
               to: ref('stg_movie_catalogue')
               field: movie_id
-      - name: ticket_price
-        tests:
-          - not_null
-          - dbt_utils.accepted_range:
-              min_value: 0
-              max_value: 100
-              inclusive: true

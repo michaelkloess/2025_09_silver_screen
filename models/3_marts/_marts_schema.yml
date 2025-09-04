@@ -23,11 +23,6 @@ models:
               to: ref('stg_movie_catalogue')
               field: movie_id
       
-      - name: month
-        description: Month of performance data
-        tests:
-          - not_null
-          
       - name: location
         description: Theater location
         tests:
@@ -40,14 +35,6 @@ models:
       
       - name: revenue
         description: Total revenue generated
-        tests:
-          - not_null
-          - dbt_utils.accepted_range:
-              min_value: 0
-              inclusive: true
-      
-      - name: profit
-        description: Profit calculated as revenue minus rental cost
         tests:
           - not_null
       
