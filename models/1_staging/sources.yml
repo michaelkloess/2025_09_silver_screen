@@ -1,0 +1,152 @@
+
+version: 2
+
+sources:
+  - name: raw
+    description: Raw source schema containing reference data, accounting data, and point-of-sale transactions for the Silver Screen theaters in New Jersey
+    database: silverscreen
+    schema: public
+    freshness: 
+      error_after:
+        count: 2
+        period: day
+      warn_after:
+        count: 1
+        period: day
+    
+
+    tables:
+      - name: movie_catalogue
+        description: table contains detailed information about movies released in 2024 and rented out by “Silver Screen”
+        columns: 
+
+          - name: movie_id
+            description: Unique identifier for each movie, often composed of a combination of studio, year, and a unique code
+
+          - name: movie_title
+            description: The title of the movie
+          
+          - name: release_date
+            description: The official release date of the movie in YYYY-MM-DD format
+
+          - name: genre
+            description: The genre of the movie, describing the type of content
+
+          - name: country
+            description: The country where the movie was produced
+
+          - name: studio
+            description: The production studio responsible for making the movie
+
+          - name: budget
+            description: The production budget of the movie, typically in dollars
+
+          - name: director
+            description: The director of the movie
+
+          - name: rating
+            description: The movie's age rating, describing the appropriate audience (e.g., PG, R)
+
+          - name: minutes
+            description: The runtime of the movie in minutes
+
+      - name: invoices
+        description: represents the invoices issued for showing a specific movie at various theater locations during different months. Data was passed by “Silver Screen” accountants
+        columns:
+
+          - name: movie_id
+            description: Unique identifier for each movie, often composed of a combination of studio, year, and a unique code
+
+          - name: invoice_id
+            description: A unique identifier for each invoice issued for a specific movie at a specific location during a particular month
+
+          - name: location_id
+            description: The identifier of the movie theater location, which is where the movie was shown
+
+          - name: month
+            description: The month in which the invoice was issued, in the format YYYY-MM-DD
+
+          - name: studio
+            description: The production studio responsible for the movie, such as Pixar, Marvel Studios, etc.
+
+          - name: release_date
+            description: The official release date of the movie, when it was first available to the public in theaters
+
+          - name: weekly_price
+            description: The weekly price charged for showing the movie at the specific location
+
+          - name: total_invoice_sum
+            description: The total sum of the invoice for the week, typically calculated as the weekly price multiplied by the number of weeks or total shows
+
+      - name: nj_001
+        description: information on all transactions from location N.1
+        columns:
+
+          - name: timestamp
+            description: The date and time the transaction occurred, formatted as YYYY-MM-DD
+          
+          - name: transaction_id
+            description: A unique alphanumeric identifier assigned to each transaction. This ensures each transaction is uniquely identified
+          
+          - name: movie_id
+            description: Unique identifier for each movie, often composed of a combination of studio, year, and a unique code
+
+          - name: ticket_amount
+            description: The number of tickets purchased in this particular transaction
+          
+          - name: price
+            description: The price per ticket for the transaction. This is the cost of a single ticket
+
+          - name: transaction_total
+            description: The total amount of money spent in the transaction, calculated as ticket_amount * price
+
+          - name: is_discounted
+            description: A boolean value indicating whether the transaction involved a discounted ticket. TRUE for discounted, FALSE for full price
+
+          - name: is_3D
+            description: A boolean value indicating whether the movie shown was in 3D. TRUE if the movie was in 3D, FALSE if not
+            
+      - name: nj_002
+        description: daily sales information from location location N.2
+        columns: 
+
+          - name: date
+            description: The date of the ticket sales transaction, formatted as YYYY-MM-DD. This represents the day for which ticket sales are recorded
+
+          - name: movie_id
+            description: Unique identifier for each movie, often composed of a combination of studio, year, and a unique code
+
+          - name: ticket_amount
+            description: The number of tickets sold on the given day
+
+          - name: ticket_price
+            description: The price per ticket sold on that particular day
+
+          - name: total_earned
+            description: The total revenue earned from ticket sales on the specified date, calculated as ticket_amount * ticket_price
+
+
+      - name: nj_003
+        description: tracks individual purchases from location N.3, covering various product types such as tickets, snacks, and drinks
+        columns:
+
+          - name: timestamp
+            description: The date and time when the transaction occurred, formatted as YYYY-MM-DD
+
+          - name: transaction_id
+            description: A unique alphanumeric identifier assigned to each transaction, ensuring that each transaction can be uniquely identified
+
+          - name: product_type
+            description: The type of product involved in the transaction, which could be a ticket, drink, snack, etc
+
+          - name: details
+            description: For tickets, this indicates the movie being viewed, represented by the movie_id. For other products, it remains empty or unspecified
+
+          - name: amount
+            description: The quantity of the product purchased in the transaction
+
+          - name: price
+            description: The price per unit of the product sold. This is the cost of one item, whether it's a ticket, drink, or snack
+
+          - name: total_value
+            description: The total amount spent in the transaction, calculated as amount * price
