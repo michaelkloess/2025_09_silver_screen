@@ -1,0 +1,50 @@
+# ===========================================
+# models/3_marts/_marts_schema.yml
+# ===========================================
+
+version: 2
+
+models:
+  - name: mart_movie_performance
+    description: Movie performance analysis with profitability metrics
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: 
+            - movie_id
+            - location
+            - month
+    
+    columns:
+      - name: movie_id
+        description: Unique identifier for each movie
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_movie_catalogue')
+              field: movie_id
+      
+      - name: location
+        description: Theater location
+        tests:
+          - not_null
+          - accepted_values:
+              values: 
+                - 'NJ_001'
+                - 'NJ_002'
+                - 'NJ_003'
+      
+      - name: revenue
+        description: Total revenue generated
+        tests:
+          - not_null
+      
+      - name: performance_category
+        description: Performance categorization based on profit
+        tests:
+          - not_null
+          - accepted_values:
+              values: 
+                - 'Rainmaker'
+                - 'Profitable'
+                - 'Break Even'
+                - 'Loss Making'

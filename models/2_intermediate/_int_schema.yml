@@ -1,0 +1,99 @@
+# ===========================================
+# models/2_intermediate/_int_schema.yml
+# ===========================================
+
+version: 2
+
+models:
+  - name: int_costs_revenue_monthly
+    description: Monthly aggregation of rental costs
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - movie_id
+            - location_id
+            - invoice_month
+    columns:
+      - name: movie_id
+        tests: 
+          - not_null
+      - name: location_id
+        tests: 
+          - not_null
+
+  - name: int_nj_001_daily
+    description: Daily sales aggregation for NJ_001
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: 
+            - transaction_date
+            - location_id
+            - movie_id
+    columns:
+      - name: movie_id
+        tests:
+          - not_null
+
+  - name: int_nj_002_daily
+    description: Daily sales data for NJ_002
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: 
+            - transaction_date
+            - location_id 
+            - movie_id
+    columns:
+      - name: movie_id
+        tests: 
+          - not_null
+
+  - name: int_nj_003_daily
+    description: Daily sales aggregation for NJ_003
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: 
+            - transaction_date
+            - location_id
+            - movie_id
+    columns:
+      - name: movie_id
+        tests: 
+          - not_null
+
+  - name: int_sales_daily_union
+    description: Union of all daily sales data
+    columns:
+      - name: location_id
+        tests:
+          - not_null
+          - accepted_values:
+              values: 
+                - 'NJ_001'
+                - 'NJ_002'
+                - 'NJ_003'
+
+  - name: int_sales_monthly
+    description: Monthly sales aggregation
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: 
+            - movie_id
+            - location_id
+            - transaction_month
+    columns:
+      - name: movie_id
+        tests: 
+          - not_null
+
+  - name: int_sales_and_costs_monthly
+    description: Combined monthly sales and costs
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: 
+            - movie_id
+            - location_id
+            - transaction_month
+    columns:
+      - name: movie_id
+        tests: 
+          - not_null

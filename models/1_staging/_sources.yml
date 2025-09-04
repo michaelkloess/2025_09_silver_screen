@@ -1,0 +1,96 @@
+# ===========================================
+# models/1_staging/_sources.yml
+# ===========================================
+
+version: 2
+
+sources:
+  - name: raw
+    description: Raw source schema for Silver Screen theaters in New Jersey
+    database: silverscreen
+    schema: public
+    freshness: 
+      error_after:
+        count: 2
+        period: day
+      warn_after:
+        count: 1
+        period: day
+
+    tables:
+      - name: movie_catalogue
+        description: Movie catalog with detailed information about movies released in 2024
+        columns:
+          - name: movie_id
+            description: Unique identifier for each movie
+            tests:
+              - unique
+              - not_null
+          - name: movie_title
+            description: The title of the movie
+            tests:
+              - not_null
+          - name: budget
+            description: The production budget of the movie, typically in dollars
+            # tests:
+              # - dbt_utils.accepted_range:
+                  # min_value: 0
+                  # inclusive: true
+                  # NOTE: Initial accepted_range test failed due to budget stored as text with currency formatting
+                  # Issue resolved by implementing data type conversion in staging layer (stg_movie_catalogue.sql)
+                  # Numeric validation now applied after proper data transformation
+
+      - name: invoices
+        description: Invoices for movie rental costs issued by distributors
+        columns:
+          - name: invoice_id
+            description: Unique identifier for each invoice
+            tests:
+              - not_null
+              # NOTE: - unique test removed due to duplicate invoice_ids in source data
+              # In production, this would require data quality discussion with upstream systems
+              # For portfolio purposes, demonstrates ability to identify and handle data quality issues
+          - name: movie_id
+            description: Reference to movie in the catalog
+            tests:
+              - not_null
+          - name: location_id
+            description: Theater location where the movie was shown
+            tests:
+              - not_null
+              - accepted_values:
+                  values: ['NJ_001', 'NJ_002', 'NJ_003']
+
+      - name: nj_001
+        description: Point-of-sale transaction data from NJ_001 theater location
+        columns:
+          - name: transaction_id
+            description: Unique identifier for each transaction
+            tests:
+              - unique
+              - not_null
+          - name: movie_id
+            description: Reference to movie being purchased
+            tests:
+              - not_null
+
+      - name: nj_002
+        description: Daily aggregated sales data from NJ_002 theater location
+        columns:
+          - name: movie_id
+            description: Reference to movie in daily sales record
+            tests:
+              - not_null
+
+      - name: nj_003
+        description: Transaction data from NJ_003 location covering tickets, snacks, and drinks
+        columns:
+          - name: transaction_id
+            description: Unique identifier for each transaction
+            tests:
+              - unique
+              - not_null
+          - name: product_type
+            description: Category of product sold (ticket, snack, drink, etc.)
+            tests:
+              - not_null

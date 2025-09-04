@@ -1,0 +1,111 @@
+# =======================================================================
+# dbt Packages Configuration
+# =======================================================================
+# This file defines external packages that extend dbt's core functionality
+# Run 'dbt deps' after modifying this file to install/update packages
+# =======================================================================
+
+packages:
+
+  # =====================================================================
+  # dbt_utils - Essential utilities and macros for dbt projects
+  # =====================================================================
+  # PURPOSE: Provides foundational macros and tests that are considered
+  #          standard in most dbt projects
+  # 
+  # KEY FEATURES:
+  # - Advanced testing capabilities (unique combinations, accepted ranges)
+  # - Cross-database compatibility macros
+  # - SQL helper functions (surrogate keys, unions, pivots)
+  # - Date/time manipulation utilities
+  # 
+  # COMMON USE CASES:
+  # - Testing composite primary keys across multiple columns
+  # - Validating numeric ranges and business rules
+  # - Creating surrogate keys for dimensional modeling
+  # - Standardizing SQL across different database platforms
+  # - Union operations with automatic column alignment
+  # 
+  # MAINTENANCE: Stable package, safe to update regularly
+  # DEPENDENCIES: None (pure dbt macros)
+  # =======================================================================
+  - package: dbt-labs/dbt_utils
+    version: 1.3.0
+
+  # =====================================================================
+  # dbt_expectations - Advanced data quality and testing framework
+  # =====================================================================
+  # PURPOSE: Extends dbt's testing capabilities with statistical validation
+  #          and advanced data quality checks inspired by Great Expectations
+  # 
+  # KEY FEATURES:
+  # - Statistical tests (mean, median, standard deviation ranges)
+  # - Cross-column relationship validation
+  # - Pattern matching and regex validation
+  # - Row count and completeness monitoring
+  # - Distribution analysis and outlier detection
+  # 
+  # COMMON USE CASES:
+  # - Detecting data anomalies and outliers in business metrics
+  # - Validating relationships between columns (A > B scenarios)
+  # - Monitoring data volume changes over time
+  # - Ensuring data conforms to expected patterns/formats
+  # - Statistical quality assurance for analytical datasets
+  # 
+  # MAINTENANCE: Update quarterly, test thoroughly in dev first
+  # DEPENDENCIES: Requires dbt_utils
+  # =======================================================================
+  - package: calogica/dbt_expectations
+    version: 0.10.0
+
+  # =====================================================================
+  # codegen - Development productivity and code generation tools
+  # =====================================================================
+  # PURPOSE: Automates repetitive dbt development tasks through code
+  #          generation, significantly improving developer productivity
+  # 
+  # KEY FEATURES:
+  # - Automatic YAML schema generation from existing tables
+  # - Base model template generation for staging layers
+  # - Source configuration auto-discovery
+  # - Model documentation scaffolding
+  # - Column analysis and profiling utilities
+  # 
+  # COMMON USE CASES:
+  # - Rapidly onboarding new data sources
+  # - Generating consistent staging model boilerplate
+  # - Creating comprehensive model documentation
+  # - Discovering and documenting table schemas
+  # - Maintaining consistent coding standards across team
+  # 
+  # MAINTENANCE: Development tool, update as needed for new features
+  # DEPENDENCIES: Requires dbt_utils for some functionality
+  # NOTE: Primarily used during development, not in production runs
+  #
+  # =======================================================================
+  - package: dbt-labs/codegen
+    version: 0.12.1
+  # =======================================================================
+  # INSTALLATION & USAGE INSTRUCTIONS
+  # =======================================================================
+  # 
+  # 1. INITIAL SETUP:
+  #    Run: dbt deps
+  #    This downloads and installs all packages to dbt_packages/ directory
+  # 
+  # 2. PACKAGE DOCUMENTATION:
+  #    - dbt_utils: https://github.com/dbt-labs/dbt-utils
+  #    - dbt_expectations: https://github.com/calogica/dbt-expectations  
+  #    - codegen: https://github.com/dbt-labs/dbt-codegen
+  # 
+  # =======================================================================
+  # BEST PRACTICES
+  # =======================================================================
+  # 
+  # - Pin specific versions (avoid 'latest') for reproducible builds
+  # - Test package updates in development before production deployment
+  # - Keep packages updated regularly for security and feature improvements
+  # - Document any custom configurations or setup requirements
+  # - Consider package interdependencies when planning updates
+  # 
+  # =======================================================================

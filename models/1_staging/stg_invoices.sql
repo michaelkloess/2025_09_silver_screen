@@ -2,7 +2,7 @@
 SELECT
 
     movie_id,
-    MONTH AS invoice_date,
+    month AS invoice_date,
     location_id,
     studio,
     invoice_id,
