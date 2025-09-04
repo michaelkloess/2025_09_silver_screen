@@ -6,6 +6,14 @@ sources:
     description: Raw source schema containing reference data, accounting data, and point-of-sale transactions for the Silver Screen theaters in New Jersey
     database: silverscreen
     schema: public
+    freshness: 
+      error_after:
+        count: 2
+        period: day
+      warn_after:
+        count: 1
+        period: day
+    
 
     tables:
       - name: movie_catalogue
