@@ -1,8 +1,12 @@
+# ===========================================
+# models/2_intermediate/_int_schema.yml
+# ===========================================
+
 version: 2
 
 models:
   - name: int_costs_revenue_monthly
-    description: Monthly aggregation of rental costs from Silver Screen invoice data, showing what theaters pay to rent movies from studios
+    description: Monthly aggregation of rental costs
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
@@ -11,156 +15,141 @@ models:
             - invoice_month
     columns:
       - name: movie_id
-        description: Unique identifier for each movie
-        tests:
+        tests: 
           - not_null
       - name: location_id
-        description: Theater location identifier
+        tests: 
+          - not_null
+          - accepted_values:
+              values: 
+                - 'NJ_001'
+                - 'NJ_002' 
+                - 'NJ_003'
+      - name: monthly_price
         tests:
           - not_null
-      - name: studio
-        description: Production studio responsible for the movie
-        tests:
-          - not_null
-      - name: invoice_month
-        description: Month of the invoice, truncated from invoice_date
-        tests:
-          - not_null
-      - name: sum_weekly_price
-        description: Sum of weekly rental prices for the month
-      - name: total_price
-        description: Estimated total monthly rental cost (sum_weekly_price * 4)
-      - name: count_invoices
-        description: Number of invoices for this movie/location/month combination
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: true
 
   - name: int_nj_001_daily
-    description: Daily aggregation of ticket sales from NJ_001 location, rolling up individual transactions to daily totals
+    description: Daily sales aggregation for NJ_001
     tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
+          combination_of_columns: 
             - transaction_date
             - location_id
             - movie_id
     columns:
       - name: transaction_date
-        description: Date of the transactions
-        tests:
+        tests: 
           - not_null
-      - name: location_id
-        description: Theater location identifier (always 'NJ_001')
-        tests:
-          - not_null
-          - accepted_values:
-              values: ['NJ_001']
       - name: movie_id
-        description: Unique identifier for each movie
         tests:
           - not_null
-      - name: tickets_sold
-        description: Total number of tickets sold on this date for this movie
-      - name: revenue
-        description: Total revenue generated on this date for this movie
+          - relationships:
+              to: ref('stg_movie_catalogue')
+              field: movie_id
+      - name: daily_revenue
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: true
 
   - name: int_nj_002_daily
-    description: Daily ticket sales data from NJ_002 location, already aggregated at source so passed through with consistent structure
+    description: Daily sales data for NJ_002
     tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
+          combination_of_columns: 
             - transaction_date
-            - location_id
+            - location_id 
             - movie_id
     columns:
       - name: transaction_date
-        description: Date of the ticket sales
-        tests:
+        tests: 
           - not_null
-      - name: location_id
-        description: Theater location identifier (always 'NJ_002')
-        tests:
-          - not_null
-          - accepted_values:
-              values: ['NJ_002']
       - name: movie_id
-        description: Unique identifier for each movie
+        tests: 
+          - not_null
+      - name: daily_revenue
         tests:
           - not_null
-      - name: tickets_sold
-        description: Number of tickets sold on this date for this movie
-      - name: revenue
-        description: Revenue generated on this date for this movie
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: true
 
   - name: int_nj_003_daily
-    description: Daily aggregation of ticket sales from NJ_003 location, filtering only ticket transactions and rolling up to daily totals
+    description: Daily sales aggregation for NJ_003
     tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
+          combination_of_columns: 
             - transaction_date
             - location_id
             - movie_id
     columns:
       - name: transaction_date
-        description: Date of the transactions
-        tests:
+        tests: 
           - not_null
-      - name: location_id
-        description: Theater location identifier (always 'NJ_003')
-        tests:
-          - not_null
-          - accepted_values:
-              values: ['NJ_003']
       - name: movie_id
-        description: Unique identifier for each movie
+        tests: 
+          - not_null
+      - name: daily_revenue
         tests:
           - not_null
-      - name: tickets_sold
-        description: Total number of tickets sold on this date for this movie
-      - name: revenue
-        description: Total revenue generated on this date for this movie
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: true
 
-  - name: int_sales
-    description: Union of all daily sales data from all NJ locations, providing a unified view of ticket sales across theaters
+  - name: int_sales_daily_union
+    description: Union of all daily sales data
     columns:
       - name: transaction_date
-        description: Date of the transactions
-        tests:
+        tests: 
           - not_null
       - name: location_id
-        description: Theater location identifier
         tests:
           - not_null
           - accepted_values:
-              values: ['NJ_001', 'NJ_002', 'NJ_003']
-      - name: movie_id
-        description: Unique identifier for each movie
-        tests:
-          - not_null
-      - name: tickets_sold
-        description: Number of tickets sold on this date for this movie at this location
-      - name: revenue
-        description: Revenue generated on this date for this movie at this location
+              values: 
+                - 'NJ_001'
+                - 'NJ_002'
+                - 'NJ_003'
 
   - name: int_sales_monthly
-    description: Monthly aggregation of ticket sales across all locations, providing monthly totals per movie per location
+    description: Monthly sales aggregation
     tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
+          combination_of_columns: 
             - movie_id
             - location_id
             - transaction_month
     columns:
       - name: movie_id
-        description: Unique identifier for each movie
+        tests: 
+          - not_null
+      - name: monthly_revenue
         tests:
           - not_null
-      - name: location_id
-        description: Theater location identifier
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: true
+
+  - name: int_sales_and_costs_monthly
+    description: Combined monthly sales and costs
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: 
+            - movie_id
+            - location_id
+            - transaction_month
+    columns:
+      - name: movie_id
+        tests: 
+          - not_null
+      - name: monthly_revenue
         tests:
           - not_null
-      - name: transaction_month
-        description: Month of the transactions, truncated from transaction_date
-        tests:
-          - not_null
-      - name: total_tickets_sold
-        description: Total number of tickets sold in this month for this movie at this location
-      - name: total_revenue
-        description: Total revenue generated in this month for this movie at this location
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: true

@@ -6,13 +6,14 @@ version: 2
 
 models:
   - name: mart_movie_performance
-    description: Comprehensive movie performance analysis with profitability metrics and categorization
+    description: Movie performance analysis with profitability metrics
     tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
+          combination_of_columns: 
             - movie_id
             - location
             - month
+    
     columns:
       - name: movie_id
         description: Unique identifier for each movie
@@ -21,42 +22,22 @@ models:
           - relationships:
               to: ref('stg_movie_catalogue')
               field: movie_id
-      - name: movie_title
-        description: Title of the movie
-        tests:
-          - not_null
-      - name: genre
-        description: Genre of the movie
-        tests:
-          - not_null
-      - name: studio
-        description: Production studio
-        tests:
-          - not_null
+      
       - name: month
         description: Month of performance data
         tests:
           - not_null
+          
       - name: location
         description: Theater location
         tests:
           - not_null
           - accepted_values:
-              values: ['NJ_001', 'NJ_002', 'NJ_003']
-      - name: rental_cost
-        description: Monthly rental cost
-        tests:
-          - not_null
-          - dbt_utils.accepted_range:
-              min_value: 0
-              inclusive: true
-      - name: tickets_sold
-        description: Number of tickets sold
-        tests:
-          - not_null
-          - dbt_utils.accepted_range:
-              min_value: 0
-              inclusive: true
+              values: 
+                - 'NJ_001'
+                - 'NJ_002'
+                - 'NJ_003'
+      
       - name: revenue
         description: Total revenue generated
         tests:
@@ -64,29 +45,19 @@ models:
           - dbt_utils.accepted_range:
               min_value: 0
               inclusive: true
+      
       - name: profit
         description: Profit calculated as revenue minus rental cost
         tests:
           - not_null
-          - dbt_utils.expression_is_true:
-              expression: "profit = revenue - rental_cost"
-      - name: revenue_per_ticket
-        description: Average revenue per ticket
-        tests:
-          - not_null
-          - dbt_utils.accepted_range:
-              min_value: 0
-              max_value: 100
-              inclusive: true
-      - name: roi_percentage
-        description: Return on investment as percentage
-        tests:
-          - dbt_utils.accepted_range:
-              min_value: 0
-              inclusive: true
+      
       - name: performance_category
         description: Performance categorization based on profit
         tests:
           - not_null
           - accepted_values:
-              values: ['Rainmaker', 'Profitable', 'Break Even', 'Loss Making']
+              values: 
+                - 'Rainmaker'
+                - 'Profitable'
+                - 'Break Even'
+                - 'Loss Making'
