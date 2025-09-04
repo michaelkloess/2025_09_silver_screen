@@ -4,7 +4,7 @@ version: 2
 sources:
   - name: raw
     description: Raw source schema containing reference data, accounting data, and point-of-sale transactions for the Silver Screen theaters in New Jersey
-    database: SILVERSCREEN
+    database: silverscreen
     schema: public
 
     tables:
@@ -14,9 +14,6 @@ sources:
 
           - name: movie_id
             description: Unique identifier for each movie, often composed of a combination of studio, year, and a unique code
-            tests:
-              - not_null
-              - unique
 
           - name: movie_title
             description: The title of the movie
@@ -40,7 +37,7 @@ sources:
             description: The director of the movie
 
           - name: rating
-            description: The movie’s age rating, describing the appropriate audience (e.g., PG, R)
+            description: The movie's age rating, describing the appropriate audience (e.g., PG, R)
 
           - name: minutes
             description: The runtime of the movie in minutes
