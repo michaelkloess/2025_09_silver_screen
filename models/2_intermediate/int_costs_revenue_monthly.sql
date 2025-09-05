@@ -1,6 +1,7 @@
 
 
 SELECT 
+
     movie_id,
     location_id,
     studio,

@@ -1,6 +1,7 @@
 
 
 SELECT 
+
     movie_id,
     location_id,
     DATE_TRUNC('MONTH', transaction_date) AS transaction_month,
